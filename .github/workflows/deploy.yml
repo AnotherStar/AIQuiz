@@ -30,7 +30,7 @@ jobs:
 
     - name: Install MongoDB if not present
       run: |
-        ssh -o StrictHostKeyChecking=no user@${{ vars.SERVER_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
           if ! [ -x "$(command -v mongo)" ]; then
             wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
             echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
@@ -43,7 +43,7 @@ jobs:
 
     - name: Install Nginx and configure
       run: |
-        ssh -o StrictHostKeyChecking=no user@${{ vars.SERVER_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
           # Установка Nginx, если он не установлен
           if ! [ -x "$(command -v nginx)" ]; then
             sudo apt update
@@ -104,7 +104,7 @@ jobs:
 
     - name: Install and configure SSL (Certbot)
       run: |
-        ssh -o StrictHostKeyChecking=no user@${{ vars.SERVER_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
           # Установка Certbot, если он не установлен
           if ! [ -x "$(command -v certbot)" ]; then
             sudo apt update
@@ -120,7 +120,7 @@ jobs:
 
     - name: Deploy Application
       run: |
-        ssh -o StrictHostKeyChecking=no user@${{ vars.SERVER_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
           # Backend deploy (NestJS)
           cd /var/www/${{ vars.SERVER_DOMAIN }}/server
           git pull origin main
