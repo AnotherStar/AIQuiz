@@ -55,7 +55,7 @@ jobs:
           sudo tee /etc/nginx/sites-available/default <<EOL
 server {
     listen 80;
-    server_name $${{ vars.SERVER_DOMAIN }};
+    server_name ${{ vars.SERVER_DOMAIN }};
 
     # Редирект HTTP на HTTPS
     return 301 https://\$host\$request_uri;
@@ -63,16 +63,16 @@ server {
 
 server {
     listen 443 ssl;
-    server_name $${{ vars.SERVER_DOMAIN }};
+    server_name ${{ vars.SERVER_DOMAIN }};
 
-    ssl_certificate /etc/letsencrypt/live/$${{ vars.SERVER_DOMAIN }}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$${{ vars.SERVER_DOMAIN }}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${{ vars.SERVER_DOMAIN }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${{ vars.SERVER_DOMAIN }}/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     # Проксирование запросов на API (NestJS)
     location /api/ {
-        proxy_pass http://localhost:$${{ vars.SERVER_PORT }};
+        proxy_pass http://localhost:${{ vars.SERVER_PORT }};
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -82,7 +82,7 @@ server {
 
     # Проксирование WebSocket запросов
     location /ws/ {
-        proxy_pass http://localhost:$${{ vars.SERVER_PORT }};
+        proxy_pass http://localhost:${{ vars.SERVER_PORT }};
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
@@ -92,7 +92,7 @@ server {
 
     # Обработка запросов на фронтенд (Vue)
     location / {
-        root /var/www/$${{ vars.SERVER_DOMAIN }}/client;
+        root /var/www/${{ vars.SERVER_DOMAIN }}/client;
         try_files \$uri \$uri/ /index.html;
     }
 }
@@ -112,7 +112,7 @@ EOL
           fi
 
           # Получение и настройка SSL-сертификатов через Certbot
-          sudo certbot --nginx --non-interactive --agree-tos --email your_email@example.com -d $${{ vars.SERVER_DOMAIN }}
+          sudo certbot --nginx --non-interactive --agree-tos --email your_email@example.com -d ${{ vars.SERVER_DOMAIN }}
 
           # Проверка успешности установки сертификатов
           sudo nginx -t && sudo systemctl reload nginx
@@ -122,19 +122,19 @@ EOL
       run: |
         ssh -o StrictHostKeyChecking=no user@${{ vars.SERVER_IP }} << 'EOF'
           # Backend deploy (NestJS)
-          cd /var/www/$${{ vars.SERVER_DOMAIN }}/server
+          cd /var/www/${{ vars.SERVER_DOMAIN }}/server
           git pull origin main
           npm install
           npm run build
           pm2 restart server || pm2 start dist/main.js --name server
 
           # Frontend deploy (Vue.js)
-          cd /var/www/$${{ vars.SERVER_DOMAIN }}/client
+          cd /var/www/${{ vars.SERVER_DOMAIN }}/client
           git pull origin main
           npm install
           npm run build
-          rm -rf /var/www/$${{ vars.SERVER_DOMAIN }}/client/dist
-          cp -r dist /var/www/$${{ vars.SERVER_DOMAIN }}/client
+          rm -rf /var/www/${{ vars.SERVER_DOMAIN }}/client/dist
+          cp -r dist /var/www/${{ vars.SERVER_DOMAIN }}/client
 
           # Перезапуск Nginx для обслуживания нового фронтенда
           sudo systemctl restart nginx
