@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ProductModule } from '@server/product/product.module';
-
+import { MongooseModule } from '@nestjs/mongoose';
+import { QuizModule } from '@server/quiz/quiz.module';
+import { UserModule } from '@server/user/user.module';
+import { MONGO_URL } from '../config';
 @Module({
-    imports: [ProductModule],
+    imports: [MongooseModule.forRoot(MONGO_URL), QuizModule, UserModule],
     controllers: [],
     providers: [],
     exports: [],

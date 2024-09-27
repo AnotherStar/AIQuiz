@@ -16,7 +16,15 @@
         "express-http-proxy": "^2.0.0"
     },
     "dependencies": {
+        "@ai-sdk/openai": "^0.0.62",
         "@nestjs/common": "^10.3.3",
-        "@nestjs/platform-express": "^10.3.3"
+        "@nestjs/mongoose": "^10.0.10",
+        "@nestjs/platform-express": "^10.3.3",
+        "ai": "^3.4.4",
+        "dotenv": "^16.4.5",
+        "mongoose": "^8.6.4",
+        "openai": "^4.65.0",
+        "socket.io": "^4.8.0",
+        "uuid": "^10.0.0"
     }
 }

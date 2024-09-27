@@ -1,0 +1,25 @@
+{
+    "background_color": "black",
+    "theme_color": "black",
+    "categories": ["games"],
+    "display": "fullscreen",
+    "name": "Quiz AI",
+    "short_name": "Quiz AI",
+    "orientation": "landscape",
+    "scope": "/",
+    "start_url": "/",
+    "description": "Квиз от GhatGPT",
+    "icons": [
+        {
+            "src": "icon.svg",
+            "sizes": "256x256"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshot-mobile.webp",
+            "sizes": "720x1280",
+            "type": "image/webp"
+        }
+    ]
+}

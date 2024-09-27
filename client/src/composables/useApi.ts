@@ -1,28 +1,48 @@
 import axios from 'axios';
-import { ItemsFilter } from '@server/product/product.service';
-import { ProductController, ItemsList } from '@server/product/product.controller';
+import { QuizController } from '@server/quiz/quiz.controller';
+import { Quiz } from '@server/quiz/quiz.service';
+import { io, Socket } from 'socket.io-client';
+import type { ServerToClientEvents, ClientToServerEvents } from '@server/types';
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io();
 
 const instance = axios.create({
     baseURL: '/api',
 });
 
-const getItem = (itemId: string) => {
-    //!todo type
-    return instance.get(`/product/${itemId}`).then(response => response.data);
+const getItem = (id: string) => {
+    return instance
+        .get<ReturnType<QuizController['getItem']>>(`/quiz/${id}`)
+        .then(response => response.data);
 };
 
-const getList = (filter?: ItemsFilter): Promise<ItemsList> => {
+const getList = () => {
     return instance
-        .get<ReturnType<ProductController['getList']>>(`/product`, {
-            params: filter,
+        .get<ReturnType<QuizController['getList']>>(`/quiz`)
+        .then(response => response.data);
+};
+
+const generate = (
+    theme: string,
+    age: number,
+    difficulty: number,
+    questionsCount: number,
+): Promise<Quiz> => {
+    return instance
+        .post<ReturnType<QuizController['generate']>>(`/quiz/generate`, {
+            theme,
+            age,
+            difficulty,
+            questionsCount,
         })
         .then(response => response.data);
 };
 
 const Api = {
-    Product: {
+    Quiz: {
         getItem,
         getList,
+        generate,
     },
 };
 

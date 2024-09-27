@@ -29,13 +29,18 @@ export default ({ command, mode }) => {
         ],
 
         server: {
-            port: 4443,
+            port: 5557,
             host: true,
             strictPort: true,
             proxy: {
                 '/api': {
-                    target: 'http://127.0.0.1:4444',
+                    target: 'http://127.0.0.1:5555',
                     changeOrigin: true,
+                },
+                '/socket.io': {
+                    target: 'http://127.0.0.1:5556',
+                    changeOrigin: true,
+                    ws: true,
                 },
             },
         },

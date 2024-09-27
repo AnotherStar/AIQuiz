@@ -1,9 +1,16 @@
 <template>
-    <div class="p-4">
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia unde consequuntur cum
-            possimus, temporibus ipsa dolorem illo, enim voluptatum a alias quod cupiditate id?
-            Asperiores beatae numquam facere inventore fuga.
-        </p>
+    <div class="menu-wrapper">
+        <Menu>
+            <img src="/logo.png" class="h-48 w-48 mx-auto mix-blend-multiply" />
+            <MenuItem to="/quiz/new" style="">Новый квиз</MenuItem>
+            <MenuItem to="/quiz">Готовые</MenuItem>
+            <MenuItem to="/settings">Настройки</MenuItem>
+            <MenuItem to="/login">Вход</MenuItem>
+        </Menu>
     </div>
 </template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import useApi from '@composables/useApi';
+</script>
