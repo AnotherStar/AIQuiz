@@ -11,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
-        node-version: '18.x'
+        node-version: '20.x'
 
     - name: Install SSH key
       run: |
@@ -121,21 +121,27 @@ jobs:
 
     - name: Deploy Application
       run: |
-        ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no user@${{ vars.SERVER_IP }} << 'EOF'
           # Backend deploy (NestJS)
-          cd /var/www/${{ vars.SERVER_DOMAIN }}/server
+          mkdir -p /var/www/${{ vars.SERVER_DOMAIN }}
+          cd /var/www/${{ vars.SERVER_DOMAIN }}
           git pull origin main
+
+
+          cd /var/www/${{ vars.SERVER_DOMAIN }}/server
           npm install
           npm run build
           pm2 restart server || pm2 start dist/main.js --name server
 
           # Frontend deploy (Vue.js)
           cd /var/www/${{ vars.SERVER_DOMAIN }}/client
-          git pull origin main
           npm install
-          npm run build
           rm -rf /var/www/${{ vars.SERVER_DOMAIN }}/client/dist
-          cp -r dist /var/www/${{ vars.SERVER_DOMAIN }}/client
+          npm run build
+
+          cd /var/www/${{ vars.SERVER_DOMAIN }}
+          npm i pm2
+          pm2 reload ecosystem.config.js
 
           # Перезапуск Nginx для обслуживания нового фронтенда
           sudo systemctl restart nginx
