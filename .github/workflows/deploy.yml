@@ -116,6 +116,28 @@ jobs:
                     sudo nginx -t && sudo systemctl reload nginx
                   EOF
 
+            # Step 3: Install necessary dependencies on the server (git, node, pm2)
+            - name: Install dependencies on server
+              run: |
+                  ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
+                      # Install Git
+                      apt-get update
+                      apt-get install -y git
+
+                      # Install Node.js
+                      curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+                      sudo apt-get install -y nodejs
+
+                      # Install PM2 globally
+                      npm install pm2@latest -g
+
+                      # Verify installations
+                      git --version
+                      node -v
+                      npm -v
+                      pm2 -v
+                  EOF
+
             - name: Deploy Application
               run: |
                   ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
@@ -123,7 +145,6 @@ jobs:
                     mkdir -p /var/www/${{ vars.SERVER_DOMAIN }}
                     cd /var/www/${{ vars.SERVER_DOMAIN }}
                     git pull origin main
-
 
                     cd /var/www/${{ vars.SERVER_DOMAIN }}/server
                     npm install
