@@ -117,37 +117,44 @@ jobs:
                   EOF
 
             # Step 3: Install necessary dependencies on the server (git, node, pm2)
-            - name: Install dependencies on server
-              run: |
-                  ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
-                      # Install Git
-                      apt-get update
-                      apt-get install -y git
+            # - name: Install dependencies on server
+            #   run: |
+            #       ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
+            #           # Install Git
+            #           apt-get update
+            #           apt-get install -y git
 
-                      # Install Node.js
-                      curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-                      sudo apt-get install -y nodejs
+            #           # Install Node.js
+            #           curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+            #           sudo apt-get install -y nodejs
 
-                      # Ensure npm and node are available globally
-                      export PATH=$PATH:/usr/bin/node:/usr/bin/npm
+            #           # Ensure npm and node are available globally
+            #           export PATH=$PATH:/usr/bin/node:/usr/bin/npm
 
-                      # Install PM2 globally
-                      npm install pm2@latest -g
+            #           # Install PM2 globally
+            #           npm install pm2@latest -g
 
-                      # Verify installations
-                      git --version
-                      node -v
-                      npm -v
-                      pm2 -v
-                  EOF
+            #           # Verify installations
+            #           git --version
+            #           node -v
+            #           npm -v
+            #           pm2 -v
+            #       EOF
 
             - name: Deploy Application
               run: |
                   ssh -o StrictHostKeyChecking=no root@${{ vars.SERVER_IP }} << 'EOF'
+                    set -e
+                    
                     # Backend deploy (NestJS)
                     mkdir -p /var/www/${{ vars.SERVER_DOMAIN }}
                     cd /var/www/${{ vars.SERVER_DOMAIN }}
-                    git pull origin main
+                    
+                    if [ ! -d ".git" ]; then
+                        git clone git@github.com:AnotherStar/AIQuiz.git
+                    else
+                        git pull origin main
+                    fi
 
                     cd /var/www/${{ vars.SERVER_DOMAIN }}/server
                     npm install
