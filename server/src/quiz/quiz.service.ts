@@ -72,15 +72,17 @@ export class Quiz {
 Мой возраст "${this.age} лет".
 Сложность вопросов "${
             this.difficulty
-        }" по 5-бальной шкале от элементарных (1) до профессиональных (5).
+        }" по 5-бальной шкале от очень простых(1) до супер-профессиональных (5).
 Всего нужно вопросов ${this.questionsCount}: 1 правильный и ${this.answersCount + 2} неправильных
 Мне нужен ответ в формате JSON, без каких-либо лишних слов.
+Постарайся сделать так чтобы вопрос не содержал в себе те же слова что и вариант ответов. 
+Вопросы должны быть интересными и разнообразными, не повторяться.
 {
   "questions": {
     "message": string; // Сам вопрос
     "rightAnswer": string; // Правильный ответ на вопрос
     "wrongAnswers": string[]; // Варианты неправильного ответа
-    "explain": string; // Сообщение о том почему ответ правильный
+    "explain": string; // Сообщение о том почему ответ правильный, иногда можешь добавить к сообщению какой-либо интересный факт
   }
 }
 `;
@@ -114,6 +116,12 @@ export class Quiz {
 
     getQuestionsFromText(): void {
         try {
+            if (/```json/.test(this.generation.text)) {
+                this.generation.text = this.generation.text
+                    .replace(/```json/, '')
+                    .replace(/```/, '');
+            }
+
             this.questions = JSON.parse(this.generation.text).questions;
             this.questions.forEach(question => {
                 const wrongAnswers = [...question.wrongAnswers];
