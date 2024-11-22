@@ -4,6 +4,10 @@ interface MediaData {
     type: 'mp3';
 }
 
+const randomFromArray = <T>(array: T[]): T => {
+    return array[Math.floor(Math.random() * array.length)];
+};
+
 export class MediaPlayer {
     public mediaLibrary: Map<string, HTMLAudioElement[]>;
 
@@ -74,7 +78,7 @@ export class MediaPlayer {
      */
     play(name: string) {
         const audios = this.mediaLibrary.get(name) || [];
-        const audio = audios[0];
+        const audio = randomFromArray(audios);
 
         if (!audio) {
             console.error(`Медиа с именем "${name}" не найдено!`);
