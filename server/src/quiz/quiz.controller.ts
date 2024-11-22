@@ -12,7 +12,7 @@ export class QuizController {
 
     @Get('/:id')
     getItem(@Param('id') id: string) {
-        return this.quizService.getItem(id);
+        return this.quizService.getItem(id, true);
     }
 
     @Post('/generate')
@@ -23,5 +23,10 @@ export class QuizController {
         @Body('questionsCount') questionsCount: number,
     ) {
         return this.quizService.generate(theme, age, difficulty, questionsCount);
+    }
+
+    @Get('/:id/media')
+    getMedia(@Param('id') id: string) {
+        return this.quizService.getMedia(id);
     }
 }

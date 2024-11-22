@@ -3,7 +3,7 @@
         <BackButton />
 
         <Menu>
-            <MenuItem v-for="quiz of quizes" :to="`/quiz/${quiz.id}`">{{ quiz.theme }}</MenuItem>
+            <MenuItem v-for="quiz of quizzes" :to="`/quiz/${quiz.id}`">{{ quiz.theme }}</MenuItem>
         </Menu>
     </div>
 </template>
@@ -15,5 +15,5 @@ import { computedAsync } from '@vueuse/core';
 
 const { Api } = useApi();
 
-const quizes = computedAsync(() => Api.Quiz.getList());
+const quizzes = computedAsync(() => Api.Quiz.getList());
 </script>

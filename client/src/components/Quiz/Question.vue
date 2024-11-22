@@ -36,6 +36,7 @@
 <script lang="ts" setup>
 import { PropType, computed } from 'vue';
 import { Question } from '@server/quiz/quiz.service';
+import { MediaPlayer } from '@composables/useMedia';
 
 const props = defineProps({
     question: {
@@ -44,6 +45,10 @@ const props = defineProps({
     },
     index: {
         type: Number,
+        required: true,
+    },
+    mediaPlayer: {
+        type: Object as PropType<MediaPlayer>,
         required: true,
     },
 });
